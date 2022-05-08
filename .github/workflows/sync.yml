@@ -2,17 +2,32 @@ name: Sync
 
 on:
   push:
-    branches: [master, main]
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.repository == 'yanglbme/gitee-pages-action'
     steps:
       - name: Sync to Gitee
         uses: wearerequired/git-mirror-action@master
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
+          # 注意在 Settings->Secrets 配置 GITEE_RSA_PRIVATE_KEY
+          SSH_PRIVATE_KEY: ${{ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuW46D7yC68lX5vkd4T7YT2ktrf+6eF5SmSGRjmsI6pq6EXyAunPpPCUNgXVRIEvgH5EMDPgEab2oZVotQYNYjqDr0uELaTf+ZJuEFSi+OXS5SjnPmWVl17qg8oW6HPebPw54MfOyDnJyySTI43Oysk8ztxZXTHPrSMkaYfZqsCQ6DPqwl/0IUP6ZMSYeGmBN8n1wUguSDtleltmHhxdQ7Ht4CTTwdpbY/KwQsYYpJChYYS2bZborzE/nb3yo5lQNEE6AtP5W7p5gkdIujIbwP8zD0aluZBz2IsO5tizbD04PyoiUi80ih9C9EWJXl6HWF1b2hXd0UxNQGwSdnUrflBq/l89oulC3t4qddlleYiVQGQoyCCKl7pRPaoT7jWALq16eUbwW71GIPIwCFW0jojaTpSFLcX96pvkltzIBhYkautICGCM77ZLbgbnOX3sntjt3uQeGItf3HUWaMNso47Cb4wQ5nvphIyGRP6jKn+5RzvM2RODzKpGwyQn8xO2E= 1824948399@qq.com }}
         with:
-          source-repo: git@github.com:yanglbme/gitee-pages-action.git
-          destination-repo: git@gitee.com:yanglbme/gitee-pages-action.git
+          # 注意替换为你的 GitHub 源仓库地址
+          source-repo: git@github.com:ynblog/ynblog.github.io.git
+          # 注意替换为你的 Gitee 目标仓库地址
+          destination-repo: git@gitee.com:ynsblog/ynsblog.git
+
+      - name: Build Gitee Pages
+        uses: yanglbme/gitee-pages-action@main
+        with:
+          # 注意替换为你的 Gitee 用户名
+          gitee-username: ynsblog
+          # 注意在 Settings->Secrets 配置 GITEE_PASSWORD
+          gitee-password: ${{ 851d6f9b4d26a9692486d9368e200b1f }}
+          # 注意替换为你的 Gitee 仓库，仓库名严格区分大小写，请准确填写，否则会出错
+          gitee-repo: ynsblog/ynsblog
+          # 要部署的分支，默认是 master，若是其他分支，则需要指定（指定的分支必须存在）
+          branch: master
